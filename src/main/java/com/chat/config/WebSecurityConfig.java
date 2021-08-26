@@ -2,7 +2,6 @@ package com.chat.config;
 
 import com.chat.domain.User;
 import com.chat.repository.UserDetailsRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.oauth2.client.EnableOAuth2Sso;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.PrincipalExtractor;
 import org.springframework.context.annotation.Bean;
@@ -10,7 +9,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 /**
@@ -22,10 +20,43 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+//        http
+//                .authorizeRequests()
+//                .antMatchers("/").permitAll()
+//                .antMatchers().authenticated()
+//                .and()
+//                .formLogin()
+//                .loginPage("/login")
+//                .permitAll()
+//                .and()
+//                .csrf().disable();
+
+//        http
+//                .authorizeRequests()
+//                .antMatchers("/", "/greeting", "/oauth2/authorization/**"   ).permitAll()
+//                .anyRequest().authenticated()
+//                .and()
+//                    .formLogin()
+//                    .loginPage("/login")
+//                .and()
+//                    .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+//                    .clearAuthentication(true)
+//                    .invalidateHttpSession(true)
+//                .and()
+//                    .csrf().disable();
         http
                 .authorizeRequests()
-                .mvcMatchers("/").permitAll()
+                .antMatchers("/", "/registration", "/static/**", "/activate/*").permitAll()
                 .anyRequest().authenticated()
+                .and()
+                .formLogin()
+                .loginPage("/login")
+                .permitAll()
+                .and()
+                .rememberMe()
+                .and()
+                .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/login")
+                .permitAll()
                 .and()
                 .csrf().disable();
     }
@@ -33,13 +64,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public PrincipalExtractor principalExtractor(UserDetailsRepository userDetailsRepository) {
         return map -> {
-
             String id = (String) map.get("sub");
-
             User user = userDetailsRepository.findById(id).orElseGet(() -> {
                 User newUser = new User();
                 newUser.setId(id);
-                newUser.setTitle((String) map.get("name"));
+                newUser.setUsername((String) map.get("name"));
                 return newUser;
             });
             return userDetailsRepository.save(user);

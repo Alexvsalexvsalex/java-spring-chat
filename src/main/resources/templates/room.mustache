@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<b> Сообщения </b>
+{{#messages}}
+    <br><b>{{author.username}}:</b> {{text}}</br>
+{{/messages}}
+<form action="/{{roomId}}/send_message" method="post">
+    <input type="text" name="text" placeholder="Введите письмо">
+    <button type="submit">
+        Отправить
+    </button>
+</form>
+<h1>admin: {{admin}} </h1>
+
+<div style="height: 100px"></div>
+
+<h1><b>Пользователи</b></h1>
+{{#users}}
+    {{username}}
+{{/users}}
+
+{{#is_admin}}
+    <b> Вы администратор комнаты</b>
+    <form action="/{{roomId}}/add_user" method="post">
+        <input type="text" name="username" placeholder="введите имя пользователя">
+        <button type="submit">
+            Добавить
+        </button>
+    </form>
+    {{#error}}
+        <b style="color: red">{{error}}</b>
+    {{/error}}
+{{/is_admin}}
+
+
+</body>
+</html>
