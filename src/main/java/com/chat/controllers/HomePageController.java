@@ -60,7 +60,7 @@ public class HomePageController {
 
         model.put("user", userService.getCurrentUser().getUsername());
 
-        return "/main";
+        return "main";
     }
 
     @PostMapping("/change_name")
