@@ -1,8 +1,12 @@
 package com.chat.controllers;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -12,6 +16,7 @@ import com.chat.domain.User;
 import com.chat.domain.dto.MessageDto;
 import com.chat.repository.MessageRepository;
 import com.chat.repository.RoomRepository;
+import com.chat.repository.UserDetailsRepository;
 import com.chat.services.RoomService;
 import com.chat.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +48,9 @@ public class RoomPageController {
     private RoomRepository roomRepository;
 
     @Autowired
+    private UserDetailsRepository userDetailsRepository;
+
+    @Autowired
     private RoomService roomService;
 //    @GetMapping("/room")
 //    public String room(Map<String, Object> model) {
@@ -52,9 +60,23 @@ public class RoomPageController {
 //    }
 
     @GetMapping("/enter_room/{room}")
-    public String enterRoom(@PathVariable String room) {
+    public String enterRoom(@PathVariable String room, RedirectAttributes attributes) {
+        Room currentRoom = roomService.getRoomById(room);
+        if (!currentRoom.getPrivate() || currentRoom.getUsers().stream().map(User::getId).collect(Collectors.toList()).contains(userService.getCurrentUser().getId())) {
+            return "redirect:/room/" + room;
+        } else {
+            attributes.addFlashAttribute("error", "Приватная комната, у вас нет доступа");
+            return "redirect:/myerror";
+        }
+    }
 
-        return "redirect:/room/" + room;
+    @PostMapping("/{roomId}/change")
+    public String change(@PathVariable String roomId) {
+        Room room = roomService.getRoomById(roomId);
+        room.setPrivate(!room.getPrivate());
+
+        roomRepository.save(room);
+        return "redirect:/room/" + roomId;
     }
 
     @GetMapping("/room/{room}")
@@ -66,36 +88,39 @@ public class RoomPageController {
         model.put("messages", messagesByRoom);
         model.put("roomId", room);
         model.put("admin", roomService.getRoomAdmin(currentRoom).getUsername());
-        model.put("is_admin", roomService.getRoomAdmin(currentRoom).getId().equals(userService.getCurrentUser().getId()));
+        model.put("is_admin",
+                roomService.getRoomAdmin(currentRoom).getId().equals(userService.getCurrentUser().getId()));
         model.put("users", roomService.getUsers(currentRoom));
-
+        model.put("switched_type", currentRoom.getPrivate() ? "Публичная" : "Приватная");
+        model.put("type", currentRoom.getPrivate() ? "Приватная" : "Публичная");
 //        model.put("error", exception);
         return "room";
     }
 
-//    @MessageMapping("/chat.sendMessage")
-//    @SendTo("/topic/public")
-
     @PostMapping("/{room}/send_message")
     public String addMessage(
             @RequestParam String text,
-            @PathVariable String room,
-            Model model,
-            HttpServletRequest request)
+            @PathVariable String room)
     {
         User user = userService.getCurrentUser();
         var currentRoom = roomService.getRoomById(room);
-        Message message = new Message(text, user, currentRoom);
+
+        Date date = new Date();
+        Message message = new Message(text, user, currentRoom, date);
         messageRepository.save(message);
         return "redirect:/room/{room}";
     }
 
     @PostMapping("/{roomId}/add_user")
-    public String addUser(@PathVariable String roomId, @RequestParam  String username, Map<String, Object> model, RedirectAttributes redirectAttributes) {
+    public String addUser(@PathVariable String roomId, @RequestParam String username, Map<String, Object> model,
+            RedirectAttributes redirectAttributes)
+    {
         try {
             User user = (User) userService.loadUserByUsername(username);
             Room room = roomService.getRoomById(roomId);
-            user.addRoom(room);
+
+            roomService.addUser(room, user);
+
         } catch (Exception e) {
             redirectAttributes.addAttribute("error", "Нет такого пользователя");
 

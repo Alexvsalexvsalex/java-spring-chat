@@ -23,7 +23,10 @@ public class UserService implements UserDetailsService {
     private UserDetailsRepository userDetailsRepository;
 
     public User getCurrentUser() {
-        return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        userDetailsRepository.save(user);
+        return userDetailsRepository.findById(user.getId()).get();
+
     }
 
     public void changeUsername(String newUsername) {

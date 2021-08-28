@@ -20,45 +20,29 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        http
+                .antMatcher("/**")
+                .authorizeRequests()
+                .antMatchers("/", "/login**", "/js/**", "/error**").permitAll()
+                .anyRequest().authenticated()
+                .and().logout().logoutSuccessUrl("/").permitAll()
+                .and()
+                .csrf().disable();
 //        http
 //                .authorizeRequests()
-//                .antMatchers("/").permitAll()
-//                .antMatchers().authenticated()
+//                .antMatchers("/", "/registration", "/static/**", "/activate/*").permitAll()
+//                .anyRequest().authenticated()
 //                .and()
 //                .formLogin()
 //                .loginPage("/login")
 //                .permitAll()
 //                .and()
+//                .rememberMe()
+//                .and()
+//                .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/login")
+//                .permitAll()
+//                .and()
 //                .csrf().disable();
-
-//        http
-//                .authorizeRequests()
-//                .antMatchers("/", "/greeting", "/oauth2/authorization/**"   ).permitAll()
-//                .anyRequest().authenticated()
-//                .and()
-//                    .formLogin()
-//                    .loginPage("/login")
-//                .and()
-//                    .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-//                    .clearAuthentication(true)
-//                    .invalidateHttpSession(true)
-//                .and()
-//                    .csrf().disable();
-        http
-                .authorizeRequests()
-                .antMatchers("/", "/registration", "/static/**", "/activate/*").permitAll()
-                .anyRequest().authenticated()
-                .and()
-                .formLogin()
-                .loginPage("/login")
-                .permitAll()
-                .and()
-                .rememberMe()
-                .and()
-                .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/login")
-                .permitAll()
-                .and()
-                .csrf().disable();
     }
 
     @Bean

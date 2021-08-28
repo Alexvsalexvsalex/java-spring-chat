@@ -4,7 +4,7 @@
     <title>Getting Started: Serving Web Content</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
-<body>
+<br>
 
 <h1> Hello, {{user}} </h1>
 <h1> Сменить имя </h1>
@@ -16,19 +16,16 @@
     </button>
 </form>
 
-<h1>
-    Ваши комнаты:
-</h1>
-
-<!--<#list users as user>-->
-<!--<li class="list-group-item">-->
-<!--    <a href="/user-messages/${user.id}">${user.getUsername()}</a>-->
-<!--</li>-->
-<!--</#list>-->
-
+<br> Публичные комнаты:
 {{#rooms}}
-    <br><a href="/enter_room/{{id}}">{{title}}</a>
+        <br><a href="/enter_room/{{id}}">{{title}}</a>
 {{/rooms}}
+
+<br> Ваши приватные комнаты:
+
+{{#private_rooms}}
+        <br><a href="/enter_room/{{id}}">{{title}}</a>
+{{/private_rooms}}
 <!--</form>-->
 
 <h1>

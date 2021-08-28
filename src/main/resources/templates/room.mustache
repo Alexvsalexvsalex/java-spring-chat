@@ -7,7 +7,7 @@
 <body>
 <b> Сообщения </b>
 {{#messages}}
-    <br><b>{{author.username}}:</b> {{text}}</br>
+    <br><b>{{date}} {{author.username}}:</b> {{text}}</br>
 {{/messages}}
 <form action="/{{roomId}}/send_message" method="post">
     <input type="text" name="text" placeholder="Введите письмо">
@@ -19,19 +19,28 @@
 
 <div style="height: 100px"></div>
 
-<h1><b>Пользователи</b></h1>
+<h1><Пользователи></Пользователи></h1>
 {{#users}}
-    {{username}}
+    <br> {{username}} </br>
 {{/users}}
 
 {{#is_admin}}
     <b> Вы администратор комнаты</b>
+    <br><b> Тип комнаты:</b> {{type}} </br>
     <form action="/{{roomId}}/add_user" method="post">
         <input type="text" name="username" placeholder="введите имя пользователя">
         <button type="submit">
             Добавить
         </button>
     </form>
+
+    <br>
+    <form action="/{{roomId}}/change" method="post">
+        <button type="submit">
+            Поменять тип на: {{switched_type}}
+        </button>
+    </form>
+
     {{#error}}
         <b style="color: red">{{error}}</b>
     {{/error}}

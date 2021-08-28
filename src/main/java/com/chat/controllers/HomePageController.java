@@ -1,7 +1,9 @@
 package com.chat.controllers;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.chat.config.WebSecurityConfig;
 import com.chat.domain.Room;
@@ -47,8 +49,14 @@ public class HomePageController {
 
     @GetMapping("/main")
     public String home(Map<String, Object> model) {
-        Iterable<Room> rooms = roomRepository.findAll();
-        model.put("rooms", rooms);
+
+        User user = userService.getCurrentUser();
+        List<Room> privateRooms = user.getRooms().stream().filter(Room::getPrivate).collect(Collectors.toList());
+        List<Room> publicRooms = ((List<Room>) roomRepository.findAll()).stream().filter(r -> !r.getPrivate()).collect(
+                Collectors.toList());
+
+        model.put("rooms", publicRooms);
+        model.put("private_rooms", privateRooms);
 
         model.put("user", userService.getCurrentUser().getUsername());
 
@@ -74,12 +82,13 @@ public class HomePageController {
 
     @PostMapping("/create_room")
     public String createPostRoom(@RequestParam String title, Model model) {
-        List<User> userLst = List.of(userService.getCurrentUser());
-        Room room = new Room(title, userService.getCurrentUser(), userLst);
-        roomRepository.save(room);
+        Room room = new Room(title, userService.getCurrentUser(), new ArrayList<>());
 
         User user = userService.getCurrentUser();
-        user.getRooms().add(room);
+        roomService.addUser(room, user);
+
+//        user.getRooms().add(room);
+
         return "redirect:/main";
     }
 

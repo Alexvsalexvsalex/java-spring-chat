@@ -1,5 +1,6 @@
 package com.chat.domain;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -33,13 +34,15 @@ public class User implements UserDetails {
 
     private String username;
 
-//    @Column(columnDefinition = "JSON")
-//    @OneToMany(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "room_id")
-//    private List<Room> rooms;
+    public List<Room> getRooms() {
+        if (rooms == null) {
+            rooms = new ArrayList<>();
+        }
+        return rooms;
+    }
 
     @ManyToMany(cascade = {
-            CascadeType.ALL
+            CascadeType.MERGE
     })
     @JoinTable(
             name = "user_rooms",
@@ -47,6 +50,7 @@ public class User implements UserDetails {
             inverseJoinColumns = { @JoinColumn(name = "user_id")}
     )
     private List<Room> rooms;
+
 
     public void addRoom(Room room) {
         rooms.add(room);

@@ -1,5 +1,7 @@
 package com.chat.domain;
 
+import java.util.Date;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -28,6 +30,8 @@ public class Message {
 
     private String text;
 
+    private Date date;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "room_id")
     private Room room;
@@ -35,10 +39,11 @@ public class Message {
     public Message() {
     }
 
-    public Message(String title, User author, Room room) {
+    public Message(String title, User author, Room room, Date date) {
         this.text = title;
         this.author = author;
         this.room = room;
+        this.date = date;
     }
 
     public Long getId() {
@@ -71,5 +76,13 @@ public class Message {
 
     public void setRoom(Room room) {
         this.room = room;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
     }
 }

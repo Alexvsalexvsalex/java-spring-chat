@@ -1,6 +1,8 @@
 package com.chat.domain;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -31,14 +33,19 @@ public class Room {
 
     private String title;
 
-//    @Column(columnDefinition = "JSON")
-    @ManyToMany(mappedBy = "rooms", cascade = {CascadeType.ALL})
+    private Boolean isPrivate;
+
+    @ManyToMany(mappedBy = "rooms", cascade = {CascadeType.MERGE})
     private List<User> users;
+
+    // for mustache
+    private Boolean isShowForUser;
 
     public Room(String title, User userAdmin, List<User> users) {
         this.title = title;
         this.userAdmin = userAdmin;
         this.users = users;
+        this.isPrivate = false;
     }
 
     public Room() {
@@ -66,10 +73,25 @@ public class Room {
     }
 
     public List<User> getUsers() {
+        if (users == null) {
+            users = new ArrayList<>();
+        }
         return users;
     }
 
     public void setUsers(List<User> users) {
         this.users = users;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Boolean getPrivate() {
+        return Optional.ofNullable(isPrivate).orElse(false);
+    }
+
+    public void setPrivate(Boolean aPrivate) {
+        isPrivate = aPrivate;
     }
 }
