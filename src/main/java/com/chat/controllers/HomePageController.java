@@ -35,7 +35,7 @@ public class HomePageController {
 
     @GetMapping("/")
     public String index() {
-        return "greeting";
+        return "redirect:/main";
     }
 
     @GetMapping("/registration")
