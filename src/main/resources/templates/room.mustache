@@ -5,6 +5,10 @@
     <title>Title</title>
 </head>
 <body>
+<div style="height: 100px">
+</div>
+<br><a href="/main">Назад на главную</a>
+
 <b> Сообщения </b>
 {{#messages}}
     <br><b>{{stringDate}} {{author.username}}:</b> {{text}}</br>
@@ -26,8 +30,8 @@
 {{/users}}
 
 {{#is_admin}}
-    <b> Вы администратор комнаты</b>
-    <br><b> Тип комнаты:</b> {{type}} </br>
+    <br><b> Вы администратор комнаты</b>
+    <br><b> Тип комнаты:</b> {{type}}
     <form action="/{{roomId}}/add_user" method="post">
         <input type="text" name="username" placeholder="введите имя пользователя">
         <button type="submit">

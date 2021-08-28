@@ -7,7 +7,4 @@ import org.springframework.stereotype.Controller;
  */
 @Controller
 public class UserControler {
-    public void createRoom() {
-
-    }
 }

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class ErrorPageController {
     @GetMapping("/myerror")
     public String privateRoom(Map<String, String> model) {
-
+        model.put("error", model.get("error"));
         return "error";
     }
 }

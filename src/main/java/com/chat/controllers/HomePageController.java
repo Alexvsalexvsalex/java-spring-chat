@@ -5,16 +5,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.chat.config.WebSecurityConfig;
 import com.chat.domain.Room;
 import com.chat.domain.User;
 import com.chat.repository.RoomRepository;
-import com.chat.repository.UserDetailsRepository;
 import com.chat.services.RoomService;
 import com.chat.services.UserService;
-import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.oauth2.resource.PrincipalExtractor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -49,7 +45,6 @@ public class HomePageController {
 
     @GetMapping("/main")
     public String home(Map<String, Object> model) {
-
         User user = userService.getCurrentUser();
         List<Room> privateRooms = user.getRooms().stream().filter(Room::getPrivate).collect(Collectors.toList());
         List<Room> publicRooms = ((List<Room>) roomRepository.findAll()).stream().filter(r -> !r.getPrivate()).collect(
