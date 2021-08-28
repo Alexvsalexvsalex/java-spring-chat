@@ -91,7 +91,7 @@ public class RoomPageController {
     {
         User user = userService.getCurrentUser();
         Room currentRoom = roomService.getRoomById(room);
-        if (!roomService.isActionByMemberOfChat(currentRoom)) {
+        if (currentRoom.getPrivate() && !roomService.isActionByMemberOfChat(currentRoom)) {
             redirectAttributes.addFlashAttribute("error", "Вы не член комнаты");
             return "redirect:/myerror";
         }

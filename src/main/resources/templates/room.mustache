@@ -5,11 +5,13 @@
     <title>Title</title>
 </head>
 <body>
-<div style="height: 100px">
+<div style="height: 20px">
 </div>
 <br><a href="/main">Назад на главную</a>
-
-<b> Сообщения </b>
+<body>
+<div style="height: 50px">
+</div>
+<b><br> Сообщения </b>
 {{#messages}}
     <br><b>{{stringDate}} {{author.username}}:</b> {{text}}</br>
 {{/messages}}
@@ -30,6 +32,7 @@
 {{/users}}
 
 {{#is_admin}}
+    <hr align="left" width="100%" size="2" color="#ff0000" />
     <br><b> Вы администратор комнаты</b>
     <br><b> Тип комнаты:</b> {{type}}
     <form action="/{{roomId}}/add_user" method="post">
