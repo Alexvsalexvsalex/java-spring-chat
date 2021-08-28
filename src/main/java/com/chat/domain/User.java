@@ -42,7 +42,7 @@ public class User implements UserDetails {
     }
 
     @ManyToMany(cascade = {
-            CascadeType.MERGE
+            CascadeType.ALL
     })
     @JoinTable(
             name = "user_rooms",

@@ -1,14 +1,9 @@
 package com.chat.controllers;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
-
-import javax.servlet.http.HttpServletRequest;
 
 import com.chat.domain.Message;
 import com.chat.domain.Room;
@@ -20,18 +15,13 @@ import com.chat.repository.UserDetailsRepository;
 import com.chat.services.RoomService;
 import com.chat.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.web.servlet.view.RedirectView;
 
 /**
  * @author
@@ -93,6 +83,7 @@ public class RoomPageController {
         model.put("users", roomService.getUsers(currentRoom));
         model.put("switched_type", currentRoom.getPrivate() ? "Публичная" : "Приватная");
         model.put("type", currentRoom.getPrivate() ? "Приватная" : "Публичная");
+        model.put("room_name", currentRoom.getTitle());
 //        model.put("error", exception);
         return "room";
     }
@@ -125,6 +116,14 @@ public class RoomPageController {
             redirectAttributes.addAttribute("error", "Нет такого пользователя");
 
         }
+        return "redirect:/room/" + roomId;
+    }
+
+    @PostMapping("/{roomId}/change_name")
+    public String changeName(@PathVariable String roomId, @RequestParam String name) {
+        Room room = roomService.getRoomById(roomId);
+        room.setTitle(name);
+        roomRepository.save(room);
         return "redirect:/room/" + roomId;
     }
 }

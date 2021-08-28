@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 import com.chat.domain.Room;
 import com.chat.domain.dto.MessageDto;
+import com.chat.domain.dto.MessageFilteredDto;
 import com.chat.domain.dto.MessageStatisticDto;
 import com.chat.repository.MessageRepository;
 import com.chat.repository.RoomRepository;
@@ -30,10 +31,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api")
 public class ApiController {
-
-
-//    @PostMapping("/{roomId}/add_user")
-
     @Autowired
     private RoomRepository roomRepository;
 
@@ -82,13 +79,28 @@ public class ApiController {
     }
 
     @GetMapping("/{roomId}/all-messages")
-    public List<MessageDto> get(@PathVariable Long roomId, @RequestBody Date start, @RequestBody Date end) {
+    public Map<String, List<MessageFilteredDto>> get(
+            @PathVariable Long roomId,
+            @RequestBody(required = false) Date start,
+            @RequestBody(required = false) Date end)
+    {
         Optional<Room> roomO = roomRepository.findById(roomId);
         if (roomO.isEmpty()) {
             return null;
         }
         List<MessageDto> messages = messageRepository.findAllMessagesByRoom(roomO.get());
-        return null;
+        boolean willFilter = (start != null && end != null);
+        List<MessageFilteredDto> res =
+                messages.stream().
+                        filter(d -> !willFilter || isDateInInterval(start, end, d.getDate()))
+                        .map(m -> new MessageFilteredDto(m.getId(), m.getAuthor().getUsername(), m.getText()))
+                        .collect(
+                                Collectors.toList());
+
+        return Map.of("messages", res);
     }
 
+    private boolean isDateInInterval(Date start, Date end, Date dateToCheck) {
+        return dateToCheck.after(start) && dateToCheck.before(end);
+    }
 }

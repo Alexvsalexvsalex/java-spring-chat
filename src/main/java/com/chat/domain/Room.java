@@ -35,11 +35,8 @@ public class Room {
 
     private Boolean isPrivate;
 
-    @ManyToMany(mappedBy = "rooms", cascade = {CascadeType.MERGE})
+    @ManyToMany(mappedBy = "rooms", cascade = {CascadeType.ALL})
     private List<User> users;
-
-    // for mustache
-    private Boolean isShowForUser;
 
     public Room(String title, User userAdmin, List<User> users) {
         this.title = title;
@@ -58,10 +55,6 @@ public class Room {
 
     public Long getId() {
         return id;
-    }
-
-    public String getTitle() {
-        return title;
     }
 
     public User getUserAdmin() {
@@ -93,5 +86,13 @@ public class Room {
 
     public void setPrivate(Boolean aPrivate) {
         isPrivate = aPrivate;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 }

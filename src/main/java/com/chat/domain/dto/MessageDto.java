@@ -1,5 +1,6 @@
 package com.chat.domain.dto;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -13,15 +14,16 @@ public class MessageDto {
     private Long id;
     private String text;
     private User author;
-    private String date;
+    private Date date;
+    private String stringDate;
 
     public MessageDto(Message message) {
         this.id = message.getId();
         this.text = message.getText();
         this.author = message.getAuthor();
-
-        SimpleDateFormat formater = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        this.date = formater.format(message.getDate());
+        this.date = message.getDate();
+        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        stringDate = formatter.format(this.date);
     }
 
     public String getText() {
@@ -48,11 +50,15 @@ public class MessageDto {
         this.author = author;
     }
 
-    public String getDate() {
+    public Date getDate() {
         return date;
     }
+    public String getStringDate() {
 
-    public void setDate(String date) {
+        return stringDate;
+    }
+
+    public void setDate(Date date) {
         this.date = date;
     }
 }

@@ -87,8 +87,6 @@ public class HomePageController {
         User user = userService.getCurrentUser();
         roomService.addUser(room, user);
 
-//        user.getRooms().add(room);
-
         return "redirect:/main";
     }
 

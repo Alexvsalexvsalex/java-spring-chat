@@ -4,8 +4,8 @@ package com.chat.domain.dto;
  * @author
  */
 public class MessageStatisticDto {
-    private String username;
-    private Long count;
+    private final String username;
+    private final Long count;
 
     public MessageStatisticDto(String username, Long count) {
         this.username = username;
@@ -16,15 +16,7 @@ public class MessageStatisticDto {
         return username;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
     public Long getCount() {
         return count;
-    }
-
-    public void setCount(Long count) {
-        this.count = count;
     }
 }

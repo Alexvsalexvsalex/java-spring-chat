@@ -7,7 +7,7 @@
 <body>
 <b> Сообщения </b>
 {{#messages}}
-    <br><b>{{date}} {{author.username}}:</b> {{text}}</br>
+    <br><b>{{stringDate}} {{author.username}}:</b> {{text}}</br>
 {{/messages}}
 <form action="/{{roomId}}/send_message" method="post">
     <input type="text" name="text" placeholder="Введите письмо">
@@ -19,9 +19,10 @@
 
 <div style="height: 100px"></div>
 
-<h1><Пользователи></Пользователи></h1>
+<h1>Комната:{{room_name}}</h1>
+<h1>Пользователи:</h1>
 {{#users}}
-    <br> {{username}} </br>
+    <br> {{username}}
 {{/users}}
 
 {{#is_admin}}
@@ -30,10 +31,16 @@
     <form action="/{{roomId}}/add_user" method="post">
         <input type="text" name="username" placeholder="введите имя пользователя">
         <button type="submit">
-            Добавить
+            Добавить пользователя
         </button>
     </form>
-
+    <br>
+    <form action="/{{roomId}}/change_name" method="post">
+        <input type="text" name="name" placeholder="введите имя">
+        <button type="submit">
+            Изменить имя комнаты
+        </button>
+    </form>
     <br>
     <form action="/{{roomId}}/change" method="post">
         <button type="submit">

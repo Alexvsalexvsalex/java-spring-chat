@@ -24,9 +24,8 @@ public class UserService implements UserDetailsService {
 
     public User getCurrentUser() {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        userDetailsRepository.save(user);
-        return userDetailsRepository.findById(user.getId()).get();
-
+        String userId = user.getId();
+        return userDetailsRepository.findById(userId).orElse(user);
     }
 
     public void changeUsername(String newUsername) {
