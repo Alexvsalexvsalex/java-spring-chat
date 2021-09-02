@@ -83,8 +83,9 @@
             url: "/api/{{roomId}}/all-messages",
             dataType: "text",
             success: function (data) {
+                const json = $.parseJSON(data);
                 $("#message_list").html(
-                    data["messages"].map(function (msg) {
+                    json["messages"].map(function (msg) {
                         return "<br><b>" + msg["stringDate"] + " " + msg["username"] + ":</b> " + msg["message"] + "</br>";
                     }).join("\n")
                 );
