@@ -71,7 +71,7 @@
             method: 'POST',
             data: jQuery.param({text: $("#message_field").val()}),
             success: () => {
-                form.reset();
+                form[0].reset();
                 doRefresh();
             }
         });
