@@ -7,20 +7,22 @@
             integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
             crossorigin="anonymous"></script>
     <script type="text/javascript">
-        $("#message_form").submit(function(e) {
+        $("#message_form").submit(function(data, e) {
+            console.log("FORM SUBMIT");
+            console.log(data);
             console.log(e);
-            e.preventDefault();
             $.ajax({
                 url: "/{{roomId}}/send_message",
                 method: 'POST',
-                data: jQuery.param({ text: $("#message_field").val()}),
+                data: jQuery.param({ text: data["text"]}),
                 success: () => doRefresh()
             });
+            e.preventDefault();
         });
         function doRefresh() {
             console.log("try refresh")
             $.ajax({
-                url: "/{{roomId}}/all-messages",
+                url: "/api/{{roomId}}/all-messages",
                 dataType: "text",
                 success: function (data) {
                     $("#message_list").html(data);
@@ -45,7 +47,7 @@
 
 </div>
 <form id="message_form">
-    <input type="text" id="message_field" placeholder="Введите письмо" style="width: 600px">
+    <input type="text" id="message_field" name="text" placeholder="Введите письмо" style="width: 600px">
     <button type="submit">Отправить</button>
 </form>
 <h1>admin: {{admin}} </h1>
