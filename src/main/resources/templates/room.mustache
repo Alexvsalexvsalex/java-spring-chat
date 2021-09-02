@@ -64,14 +64,13 @@
 
 </body>
 <script type="text/javascript">
-    $("#message_form ").submit(function (data, e) {
+    $("#message_form").submit(function (e) {
         console.log("FORM SUBMIT");
-        console.log(data);
         console.log(e);
         $.ajax({
             url: "/{{roomId}}/send_message",
             method: 'POST',
-            data: jQuery.param({text: data["text"]}),
+            data: jQuery.param({text: $("#message_field").val()}),
             success: () => doRefresh()
         });
         e.preventDefault();
