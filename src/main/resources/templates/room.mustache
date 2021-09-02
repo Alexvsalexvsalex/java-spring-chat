@@ -6,39 +6,11 @@
     <script src="https://code.jquery.com/jquery-3.6.0.js"
             integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
             crossorigin="anonymous"></script>
-    <script type="text/javascript">
-        $("#message_form").submit(function(data, e) {
-            console.log("FORM SUBMIT");
-            console.log(data);
-            console.log(e);
-            $.ajax({
-                url: "/{{roomId}}/send_message",
-                method: 'POST',
-                data: jQuery.param({ text: data["text"]}),
-                success: () => doRefresh()
-            });
-            e.preventDefault();
-        });
-        function doRefresh() {
-            console.log("try refresh")
-            $.ajax({
-                url: "/api/{{roomId}}/all-messages",
-                dataType: "text",
-                success: function (data) {
-                    $("#message_list").html(data);
-                }
-            });
-        }
-        $(function() {
-            setInterval(doRefresh, 10000);
-        });
-    </script>
 </head>
 <body>
 <div style="height: 20px">
 </div>
 <br><a href="/main">Назад на главную</a>
-<body>
 <div style="height: 50px">
 </div>
 <b><br> Сообщения </b>
@@ -61,7 +33,7 @@
 {{/users}}
 
 {{#is_admin}}
-    <hr align="left" width="100%" size="2" color="#ff0000" />
+    <hr align="left" width="100%" size="2" color="#ff0000"/>
     <br><b> Вы администратор комнаты</b>
     <br><b> Тип комнаты:</b> {{type}}
     <form action="/{{roomId}}/add_user" method="post">
@@ -91,4 +63,33 @@
 
 
 </body>
+<script type="text/javascript">
+    $("#message_form ").submit(function (data, e) {
+        console.log("FORM SUBMIT");
+        console.log(data);
+        console.log(e);
+        $.ajax({
+            url: "/{{roomId}}/send_message",
+            method: 'POST',
+            data: jQuery.param({text: data["text"]}),
+            success: () => doRefresh()
+        });
+        e.preventDefault();
+    });
+
+    function doRefresh() {
+        console.log("try refresh")
+        $.ajax({
+            url: "/api/{{roomId}}/all-messages",
+            dataType: "text",
+            success: function (data) {
+                $("#message_list").html(data);
+            }
+        });
+    }
+
+    $(function () {
+        setInterval(doRefresh, 10000);
+    });
+</script>
 </html>
