@@ -3,6 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <script src="http://code.jquery.com/jquery-3.6.0.js"></script>
+    <script type="text/javascript">
+        $("#message_form").submit(function(e) {
+            console.log(e);
+            e.preventDefault();
+        });
+        $(function() {
+            setInterval(function () {
+                $.ajax({
+                    url: "https://javaspringchat.herokuapp.com/api/1/all-messages",
+                    dataType: "text",
+                    success: function (data) {
+                        $("#message_list").html(data);
+                    }
+                });
+            }, 5000);
+        });
+    </script>
 </head>
 <body>
 <div style="height: 20px">
@@ -12,10 +30,11 @@
 <div style="height: 50px">
 </div>
 <b><br> Сообщения </b>
-{{#messages}}
-    <br><b>{{stringDate}} {{author.username}}:</b> {{text}}</br>
-{{/messages}}
-<form action="/{{roomId}}/send_message" method="post">
+
+<div id="message_list">
+
+</div>
+<form id="message_form" action="/{{roomId}}/send_message" method="post">
     <input type="text" name="text" placeholder="Введите письмо" style="width: 600px">
     <button type="submit">
         Отправить
